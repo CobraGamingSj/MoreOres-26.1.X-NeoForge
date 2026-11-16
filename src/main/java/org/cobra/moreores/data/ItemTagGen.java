@@ -6,9 +6,9 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.data.ItemTagsProvider;
 import org.cobra.moreores.MoreOresModLoader;
-import org.cobra.moreores.block.ModBlocks;
-import org.cobra.moreores.item.ModItems;
-import org.cobra.moreores.registry.ModItemTags;
+import org.cobra.moreores.world.block.ModBlocks;
+import org.cobra.moreores.world.item.ModItems;
+import org.cobra.moreores.tags.ModItemTags;
 
 import java.util.concurrent.CompletableFuture;
 

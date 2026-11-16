@@ -12,9 +12,9 @@ import org.cobra.moreores.data.worldgen.placement.BiomeModifications;
 import org.cobra.moreores.data.worldgen.placement.ModConfiguredFeatures;
 import org.cobra.moreores.data.worldgen.placement.ModPlacedFeatures;
 import org.cobra.moreores.enchantment.ModEnchantments;
-import org.cobra.moreores.item.equipment.trim.ModTrimMaterials;
-import org.cobra.moreores.item.equipment.trim.ModTrimPatterns;
-import org.cobra.moreores.item.trading.ModVillagerTrades;
+import org.cobra.moreores.world.item.equipment.trim.ModTrimMaterials;
+import org.cobra.moreores.world.item.equipment.trim.ModTrimPatterns;
+import org.cobra.moreores.world.item.trading.ModVillagerTrades;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;

@@ -10,18 +10,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SandBlock;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import org.cobra.moreores.block.ModBlocks;
-import org.cobra.moreores.block.client.menu.GemCrystallizerScreen;
-import org.cobra.moreores.block.client.menu.GemPurifierScreen;
-import org.cobra.moreores.block.client.menu.ModMenuType;
-import org.cobra.moreores.block.entity.ModBlockEntityType;
+import org.cobra.moreores.world.block.ModBlocks;
+import org.cobra.moreores.client.menu.GemCrystallizerScreen;
+import org.cobra.moreores.client.menu.GemPurifierScreen;
+import org.cobra.moreores.client.menu.ModMenuType;
+import org.cobra.moreores.world.block.entity.ModBlockEntityType;
 import org.cobra.moreores.enchantment.entity.effect.EnchantmentEffects;
-import org.cobra.moreores.item.ModCreativeModeTabs;
-import org.cobra.moreores.item.ModItems;
+import org.cobra.moreores.world.item.ModCreativeModeTabs;
+import org.cobra.moreores.world.item.ModItems;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import org.cobra.moreores.networking.block.GemMachineButtonHandlingPayload;
+import org.cobra.moreores.networking.block.MachineStatusDataPayload;
 import org.cobra.moreores.networking.item.EnergyIngotC2SPayload;
 import org.cobra.moreores.recipe.ModRecipeSerializer;
 import org.cobra.moreores.recipe.ModRecipeType;
@@ -357,6 +358,14 @@ public class MoreOresModLoader {
         registrar.playToServer(EnergyIngotC2SPayload.TYPE, EnergyIngotC2SPayload.PACKET_CODEC, (payload, context) -> {
             ServerPlayer player = (ServerPlayer) context.player();
             EnergyIngotC2SPayload.handle(payload, player);
+        });
+        registrar.playToServer(MachineStatusDataPayload.TYPE, MachineStatusDataPayload.STREAM_CODEC, (payload, context) -> {
+            ServerPlayer player = (ServerPlayer) context.player();
+            MachineStatusDataPayload.handle(payload, player);
+        });
+        registrar.playToServer(GemMachineButtonHandlingPayload.TYPE, GemMachineButtonHandlingPayload.STREAM_CODEC, (payload, context) -> {
+            ServerPlayer player = (ServerPlayer) context.player();
+            GemMachineButtonHandlingPayload.handle(payload, player);
         });
     }
     

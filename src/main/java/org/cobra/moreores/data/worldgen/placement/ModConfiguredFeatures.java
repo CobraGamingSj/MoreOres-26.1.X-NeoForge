@@ -11,7 +11,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import org.cobra.moreores.MoreOresModLoader;
-import org.cobra.moreores.block.ModBlocks;
+import org.cobra.moreores.world.block.ModBlocks;
 
 import java.util.List;
 

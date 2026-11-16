@@ -5,8 +5,8 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import org.cobra.moreores.MoreOresModLoader;
-import org.cobra.moreores.block.ModBlocks;
-import org.cobra.moreores.registry.ModBlockTags;
+import org.cobra.moreores.world.block.ModBlocks;
+import org.cobra.moreores.tags.ModBlockTags;
 
 import java.util.concurrent.CompletableFuture;
 

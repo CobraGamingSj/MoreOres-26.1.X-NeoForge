@@ -11,11 +11,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
 import org.cobra.moreores.MoreOresModLoader;
-import org.cobra.moreores.item.ModItems;
+import org.cobra.moreores.world.item.ModItems;
 import org.cobra.moreores.recipe.GemCrystallizerRecipe;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class GemCrystallizerRecipeBuilder {
     private final Ingredient ingredientBefore;

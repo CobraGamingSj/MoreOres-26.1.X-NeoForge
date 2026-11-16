@@ -1,41 +1,33 @@
 package org.cobra.moreores.data;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.equipment.trim.TrimPattern;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.cobra.moreores.MoreOresModLoader;
-import org.cobra.moreores.block.ModBlocks;
+import org.cobra.moreores.world.block.ModBlocks;
 import org.cobra.moreores.data.recipes.GemCrystallizerRecipeBuilder;
 import org.cobra.moreores.data.recipes.GemPurifyingRecipeBuilder;
-import org.cobra.moreores.item.ModItems;
-import org.cobra.moreores.item.equipment.trim.ModTrimPatterns;
-import org.cobra.moreores.registry.ModItemTags;
+import org.cobra.moreores.world.item.ModItems;
+import org.cobra.moreores.world.item.equipment.trim.ModTrimPatterns;
+import org.cobra.moreores.tags.ModItemTags;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-
-import static net.minecraft.data.recipes.packs.VanillaRecipeProvider.smithingTrims;
 
 public class AutomatedRecipeCreator extends RecipeProvider {
     private static final Map<Item, SmithingData> SMITHING_DATA = Map.ofEntries(

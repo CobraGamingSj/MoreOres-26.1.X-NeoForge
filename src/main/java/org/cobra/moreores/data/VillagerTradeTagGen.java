@@ -4,8 +4,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.VillagerTradesTagsProvider;
 import net.minecraft.tags.TagEntry;
-import org.cobra.moreores.item.trading.ModVillagerTrades;
-import org.cobra.moreores.registry.ModVillagerTradeTags;
+import org.cobra.moreores.world.item.trading.ModVillagerTrades;
+import org.cobra.moreores.tags.ModVillagerTradeTags;
 
 import java.util.concurrent.CompletableFuture;
 

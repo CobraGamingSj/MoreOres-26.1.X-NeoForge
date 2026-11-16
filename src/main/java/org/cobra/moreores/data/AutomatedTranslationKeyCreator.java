@@ -6,9 +6,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import org.cobra.moreores.MoreOresModLoader;
-import org.cobra.moreores.block.ModBlocks;
-import org.cobra.moreores.item.GemItem;
-import org.cobra.moreores.item.ModItems;
+import org.cobra.moreores.world.block.ModBlocks;
+import org.cobra.moreores.world.item.GemItem;
+import org.cobra.moreores.world.item.ModItems;
 
 public class AutomatedTranslationKeyCreator extends LanguageProvider {
     public AutomatedTranslationKeyCreator(PackOutput output) {

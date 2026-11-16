@@ -7,7 +7,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.equipment.EquipmentAsset;
-import org.cobra.moreores.item.equipment.ModEquipmentAssets;
+import org.cobra.moreores.world.item.equipment.ModEquipmentAssets;
 
 import java.util.HashMap;
 import java.util.Map;

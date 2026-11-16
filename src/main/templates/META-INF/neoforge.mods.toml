@@ -86,3 +86,6 @@ description='''This mod adds new ores into your game.'''
 # stop your mod loading on the server for example.
 #[features.${mod_id}]
 #openGLVersion="[3.2,)"
+[[mixins]]
+config = "moreores.mixins.json"
+

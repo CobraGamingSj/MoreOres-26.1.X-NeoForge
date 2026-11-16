@@ -11,7 +11,7 @@ import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.cobra.moreores.MoreOresModLoader;
-import org.cobra.moreores.block.ModBlocks;
+import org.cobra.moreores.world.block.ModBlocks;
 import org.cobra.moreores.data.village.TradeSets;
 
 public class ModVillagerProfession {

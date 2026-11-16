@@ -15,8 +15,8 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import org.cobra.moreores.MoreOresModLoader;
-import org.cobra.moreores.block.ModBlocks;
-import org.cobra.moreores.item.ModItems;
+import org.cobra.moreores.world.block.ModBlocks;
+import org.cobra.moreores.world.item.ModItems;
 
 import java.util.Map;
 import java.util.Set;
