@@ -1,4 +1,4 @@
-package org.cobra.moreores.client.menu;
+package org.cobra.moreores.client.gui.menu;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -9,7 +9,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.cobra.moreores.world.block.ModBlocks;
-import org.cobra.moreores.world.block.entity.gem.GemPurifierBlockEntity;
+import org.cobra.moreores.world.block.entity.gem.machine.GemPurifierBlockEntity;
 import org.cobra.moreores.world.item.ModItems;
 import org.cobra.moreores.tags.ModItemTags;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
@@ -20,7 +20,7 @@ public class GemPurifierMenu extends AbstractGemMachineMenu<GemPurifierBlockEnti
     private final ContainerData containerData;
     
     public GemPurifierMenu(int containerId, Inventory inventory, FriendlyByteBuf extra) {
-        this(containerId, inventory, inventory.player.level().getBlockEntity(extra.readBlockPos()), new ItemStacksResourceHandler(16), new SimpleContainerData(3));
+        this(containerId, inventory, inventory.player.level().getBlockEntity(extra.readBlockPos()), new ItemStacksResourceHandler(17), new SimpleContainerData(3));
     }
 
     public GemPurifierMenu(int containerId, Inventory inventory, BlockEntity blockEntity, ItemStacksResourceHandler handler, ContainerData containerData) {
@@ -53,7 +53,7 @@ public class GemPurifierMenu extends AbstractGemMachineMenu<GemPurifierBlockEnti
 
         this.addSlot(new ResourceHandlerSlot(handler, handler::set, 4, 109, 33)); // Redstone Source
 
-        for (int i = 0; i < 11; ++i) {
+        for (int i = 0; i < 12; i++) {
             this.addSlot(new ResourceHandlerSlot(handler, handler::set, 5 + i, 6 + i * 18, 178));
         }
         

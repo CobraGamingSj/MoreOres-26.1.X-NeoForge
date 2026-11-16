@@ -1,7 +1,7 @@
-package org.cobra.moreores.client.menu;
+package org.cobra.moreores.client.gui.menu;
 
 import net.minecraft.world.entity.player.Inventory;
-import org.cobra.moreores.world.block.entity.gem.AbstractGemMachineBlockEntity;
+import org.cobra.moreores.world.block.entity.gem.machine.AbstractGemMachineBlockEntity;
 
 public interface MenuHelper<T extends AbstractGemMachineBlockEntity> {
 

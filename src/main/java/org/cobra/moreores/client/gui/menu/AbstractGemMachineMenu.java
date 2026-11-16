@@ -1,4 +1,4 @@
-package org.cobra.moreores.client.menu;
+package org.cobra.moreores.client.gui.menu;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -9,7 +9,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
-import org.cobra.moreores.world.block.entity.gem.AbstractGemMachineBlockEntity;
+import org.cobra.moreores.world.block.entity.gem.machine.AbstractGemMachineBlockEntity;
 import org.jspecify.annotations.Nullable;
 
 public abstract class AbstractGemMachineMenu<T extends AbstractGemMachineBlockEntity> extends AbstractContainerMenu implements MenuHelper<T> {

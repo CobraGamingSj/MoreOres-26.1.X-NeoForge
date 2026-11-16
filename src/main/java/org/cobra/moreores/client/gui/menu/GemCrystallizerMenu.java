@@ -1,4 +1,4 @@
-package org.cobra.moreores.client.menu;
+package org.cobra.moreores.client.gui.menu;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import org.cobra.moreores.world.block.ModBlocks;
-import org.cobra.moreores.world.block.entity.gem.GemCrystallizerBlockEntity;
+import org.cobra.moreores.world.block.entity.gem.machine.GemCrystallizerBlockEntity;
 import org.cobra.moreores.world.item.ModItems;
 import org.cobra.moreores.tags.ModItemTags;
 

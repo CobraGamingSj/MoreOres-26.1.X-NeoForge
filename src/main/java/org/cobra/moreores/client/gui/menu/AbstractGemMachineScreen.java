@@ -1,4 +1,4 @@
-package org.cobra.moreores.client.menu;
+package org.cobra.moreores.client.gui.menu;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import org.cobra.moreores.world.block.entity.gem.AbstractGemMachineBlockEntity;
+import org.cobra.moreores.world.block.entity.gem.machine.AbstractGemMachineBlockEntity;
 import org.cobra.moreores.networking.block.MachineStatusDataPayload;
 import org.lwjgl.glfw.GLFW;
 

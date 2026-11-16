@@ -8,8 +8,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.cobra.moreores.MoreOresModLoader;
-import org.cobra.moreores.client.menu.AbstractGemMachineMenu;
-import org.cobra.moreores.world.block.entity.gem.AbstractGemMachineBlockEntity;
+import org.cobra.moreores.client.gui.menu.AbstractGemMachineMenu;
+import org.cobra.moreores.world.block.entity.gem.machine.AbstractGemMachineBlockEntity;
 
 public record GemMachineButtonHandlingPayload(int buttonIndex, BlockPos pos) implements CustomPacketPayload {
     public static final Type<GemMachineButtonHandlingPayload> TYPE = new Type<>(MoreOresModLoader.id("button_click"));

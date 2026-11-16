@@ -4,8 +4,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.cobra.moreores.MoreOresModLoader;
 import org.cobra.moreores.world.block.ModBlocks;
-import org.cobra.moreores.world.block.entity.gem.GemCrystallizerBlockEntity;
-import org.cobra.moreores.world.block.entity.gem.GemPurifierBlockEntity;
+import org.cobra.moreores.world.block.entity.gem.machine.GemCrystallizerBlockEntity;
+import org.cobra.moreores.world.block.entity.gem.machine.GemPurifierBlockEntity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 

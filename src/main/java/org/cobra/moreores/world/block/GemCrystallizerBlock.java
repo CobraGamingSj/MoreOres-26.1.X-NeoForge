@@ -24,8 +24,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.cobra.moreores.world.block.entity.ModBlockEntityType;
-import org.cobra.moreores.world.block.entity.gem.GemCrystallizerBlockEntity;
-import org.cobra.moreores.world.block.entity.gem.GemPurifierBlockEntity;
+import org.cobra.moreores.world.block.entity.gem.machine.GemCrystallizerBlockEntity;
+import org.cobra.moreores.world.block.entity.gem.machine.GemPurifierBlockEntity;
 import org.cobra.moreores.world.item.util.impl.CrystallizationGemstones;
 import org.jspecify.annotations.Nullable;
 

@@ -1,4 +1,4 @@
-package org.cobra.moreores.world.block.entity.gem;
+package org.cobra.moreores.world.block.entity.gem.machine;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;

@@ -1,4 +1,4 @@
-package org.cobra.moreores.client.menu;
+package org.cobra.moreores.client.gui.menu;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -57,7 +57,9 @@ public class FluidWidget implements Renderable, LayoutElement {
         BlockAndTintGetter world = Minecraft.getInstance().level;
         if(world == null) return;
         TextureAtlasSprite sprite = set.get(fluidState).stillMaterial().sprite();
-        int tintColor = set.get(fluidState).tintSource().colorInWorld(world.getBlockState(blockPos), world, blockPos);
+        var fluidModel = set.get(fluidState);
+        if(fluidModel.fluidTintSource() == null) return;
+        int tintColor = fluidModel.fluidTintSource().colorInWorld(world.getBlockState(blockPos), world, blockPos);
         float red = (tintColor >> 16 & 0xFF) /255F;
         float green = (tintColor >> 8 & 0xFF) /255F;
         float blue = (tintColor & 0xFF) /255F;
