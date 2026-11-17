@@ -315,7 +315,7 @@ public class GemPurifierBlockEntity extends AbstractGemMachineBlockEntity {
     protected void useEnergy() {
         int amount = level.hasNeighborSignal(worldPosition) ? 320 : 64;
         try(Transaction transaction = Transaction.openRoot()) {
-            long extracted = energyHandler().extract(amount, transaction);
+            int extracted = energyHandler().extract(amount, transaction);
             energyExtracted += extracted;
             transaction.commit();
         }
@@ -349,29 +349,7 @@ public class GemPurifierBlockEntity extends AbstractGemMachineBlockEntity {
     private boolean hasPurificationFinished() {
         return initialProgressTicks >= maxProgress;
     }
-
-    @Override
-    public void validateEnergyAmount(int slot) {
-        if(energyAmount() > 10_000_000) {
-            energyHandler().set(10_000_000);
-        }
-
-        long energy = this.energyAmount();
-
-        long [] milestones = {1_000_000, 2_000_000, 3_000_000, 4_000_000, 5_000_000, 6_000_000, 7_000_000, 8_000_000, 9_000_000, 10_000_000};
-
-        for(long milestone : milestones) {
-            if(energy == milestone && previousRemovedEnergyMilestone < milestone) {
-                try(Transaction transaction = Transaction.openRoot()) {
-                    ContainerHelper.removeItem(main.copyToList(), ENERGY_SLOT, 1);
-                    previousRemovedEnergyMilestone = milestone;
-                    transaction.commit();
-                }
-                break;
-            }
-        }
-    }
-
+    
     private void validateWaterAmount() {
         if(fluidAmount() > 10_000) {
             fluidHandler.set(0, fluidHandler.getResource(0), 10_000);

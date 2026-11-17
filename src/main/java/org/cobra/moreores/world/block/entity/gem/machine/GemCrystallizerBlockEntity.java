@@ -24,6 +24,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.cobra.moreores.world.block.GemCrystallizerBlock;
 import org.cobra.moreores.world.block.ModBlocks;
 import org.cobra.moreores.world.block.entity.ModBlockEntityType;
@@ -61,7 +62,7 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
     protected final ContainerData containerData;
     private int maxProgressTicks = 300;
 
-    public int dustParticleCount = 0;
+    public int radiantDust = 0;
     public int maxDust = 10000;
     private int dustTick;
     
@@ -80,7 +81,7 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
                 return switch (index) {
                     case 0 -> GemCrystallizerBlockEntity.this.initialProgressTicks;
                     case 1 -> GemCrystallizerBlockEntity.this.maxProgressTicks;
-                    case 2 ->  GemCrystallizerBlockEntity.this.dustParticleCount;
+                    case 2 ->  GemCrystallizerBlockEntity.this.radiantDust;
                     case 3 ->  GemCrystallizerBlockEntity.this.redstone;
                     default -> 0;
                 };
@@ -91,7 +92,7 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
                 switch (index) {
                     case 0 -> GemCrystallizerBlockEntity.this.initialProgressTicks = value;
                     case 1 -> GemCrystallizerBlockEntity.this.maxProgressTicks = value;
-                    case 2 -> GemCrystallizerBlockEntity.this.dustParticleCount = value;
+                    case 2 -> GemCrystallizerBlockEntity.this.radiantDust = value;
                     case 3 -> GemCrystallizerBlockEntity.this.redstone = value;
                 }
             }
@@ -104,7 +105,7 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
     }
 
     public void setDustCount(int dustCount) {
-        this.dustParticleCount = dustCount;
+        this.radiantDust = dustCount;
     }
 
     @Override
@@ -140,7 +141,7 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
     @Override
     public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
-        output.putInt("DustCount", dustParticleCount);
+        output.putInt("DustCount", radiantDust);
         output.putInt("DustTick", dustTick);
         output.store("GemType", CrystallizationGemstones.CODEC, gemstone());
     }
@@ -148,7 +149,7 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
     @Override
     public void loadAdditional(ValueInput view) {
         super.loadAdditional(view);
-        dustParticleCount = view.getIntOr("DustCount", 0);
+        radiantDust = view.getIntOr("DustCount", 0);
         dustTick = view.getIntOr("DustTick", 0);
         gem = view.read("GemType", CrystallizationGemstones.CODEC).orElse(CrystallizationGemstones.EMPTY);
     }
@@ -223,8 +224,8 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
         }
 
         ItemResource stack = radiantDustStack();
-        if(stack.is(ModItems.RADIANT_DUST.get()) && dustParticleCount <= maxDust) {
-            dustParticleCount += 2000;
+        if(stack.is(ModItems.RADIANT_DUST.get()) && radiantDust <= maxDust) {
+            radiantDust += 2000;
             setChanged(level, pos, state);
         }
         ItemResource stack1 = redstoneStack(REDSTONE_SLOT);
@@ -237,15 +238,15 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
         if(machineStatus == MachineStatus.RUNNING) {
             energyState = MachineStatus.EnergyState.EXTRACTING;
             setChanged(level, pos, state);
-            if (isResultSlotAvailable() && checkRecipe() && hasRequiredEnergyAmount() && dustParticleCount >= 15) {
+            if (isResultSlotAvailable() && checkRecipe() && hasRequiredEnergyAmount() && radiantDust >= 15) {
                 this.increaseProgressTicks();
                 if((!level.hasNeighborSignal(pos) || redstone > 0) && redstoneTick >= 20) {
                     redstone--;
                     redstoneTick = 0;
                 }
                 this.useEnergy();
-                if(dustParticleCount > 0 && dustTick >= 20) {
-                    dustParticleCount--;
+                if(radiantDust > 0 && dustTick >= 20) {
+                    radiantDust--;
                     dustTick = 0;
                     setChanged(level, pos, state);
                 }
@@ -295,17 +296,39 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
         return initialProgressTicks >= maxProgressTicks;
     }
 
-    private void validateRadiantDust() {
-        if(dustParticleCount > 10000) {
-            dustParticleCount = 10000;
+    @Override
+    protected void validateEnergyAmount(int energySlot) {
+        if(energyAmount() > 1000000) {
+            energyHandler().set(1000000);
         }
 
-        long energy = dustParticleCount;
+        long energy = this.energyAmount();
+
+        long [] milestones = {100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000};
+
+        for(long milestone : milestones) {
+            if(energy >= milestone && previousRemovedEnergyMilestone < milestone) {
+                try(Transaction transaction = Transaction.openRoot()) {
+                    ContainerHelper.removeItem(main.copyToList(), energySlot, 1);
+                    previousRemovedEnergyMilestone = milestone;
+                    transaction.commit();
+                }
+                break;
+            }
+        }
+    }
+
+    private void validateRadiantDust() {
+        if(radiantDust > 10000) {
+            radiantDust = 10000;
+        }
+
+        long energy = radiantDust;
 
         long [] milestones = {2000, 4000, 6000, 8000, 10000};
 
         for(long milestone : milestones) {
-            if(energy == milestone && previousRemovedRadiantDustMilestone < milestone) {
+            if(energy >= milestone && previousRemovedRadiantDustMilestone < milestone) {
                 ContainerHelper.removeItem(stack.copyToList(), RADIANT_DUST_SLOT, 1);
                 previousRemovedRadiantDustMilestone = milestone;
                 break;

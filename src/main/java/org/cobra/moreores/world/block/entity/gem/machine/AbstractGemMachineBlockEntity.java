@@ -208,9 +208,12 @@ public abstract class AbstractGemMachineBlockEntity extends BlockEntity implemen
         long [] milestones = {1000000, 2000000, 3000000, 4000000, 5000000, 6000000, 7000000, 8000000, 9000000, 10000000};
 
         for(long milestone : milestones) {
-            if(energy == milestone && previousRemovedEnergyMilestone < milestone) {
-                ContainerHelper.removeItem(main.copyToList(), slot, 1);
-                previousRemovedEnergyMilestone = milestone;
+            if(energy >= milestone && previousRemovedEnergyMilestone < milestone) {
+                try(Transaction transaction = Transaction.openRoot()) {
+                    ContainerHelper.removeItem(main.copyToList(), slot, 1);
+                    previousRemovedEnergyMilestone = milestone;
+                    transaction.commit();
+                }
                 break;
             }
         }
@@ -226,9 +229,12 @@ public abstract class AbstractGemMachineBlockEntity extends BlockEntity implemen
         int [] milestones = {1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000};
 
         for(long milestone : milestones) {
-            if(amount == milestone && previousRemovedRedstoneMilestone < milestone) {
-                ContainerHelper.removeItem(main.copyToList(), slot, 1);
-                previousRemovedRedstoneMilestone = milestone;
+            if(redstone >= milestone && previousRemovedRedstoneMilestone < milestone) {
+                try(Transaction transaction = Transaction.openRoot()) {
+                    ContainerHelper.removeItem(main.copyToList(), slot, 1);
+                    previousRemovedRedstoneMilestone = milestone;
+                    transaction.commit();
+                }
                 break;
             }
         }
