@@ -5,6 +5,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -21,9 +23,11 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.cobra.moreores.MoreOresModLoader;
 import org.cobra.moreores.world.block.entity.ModBlockEntityType;
 import org.cobra.moreores.world.block.entity.gem.machine.GemPurifierBlockEntity;
 import org.cobra.moreores.world.item.util.impl.PurificationGemstones;
@@ -65,7 +69,6 @@ public class GemPurifierBlock extends BaseEntityBlock {
             player.openMenu(new SimpleMenuProvider(be, be.getDisplayName()), pos);
             return InteractionResult.SUCCESS;
         }
-        player.sendSystemMessage(Component.literal("[MoreOres+] ").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD).append(Component.literal("This feature will be added soon.").withStyle(ChatFormatting.RED)));
         return InteractionResult.SUCCESS;
     }
 
@@ -86,6 +89,36 @@ public class GemPurifierBlock extends BaseEntityBlock {
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext ctx) {
         return this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection().getClockWise()).setValue(REDSTONE_POWERED, ctx.getLevel().hasNeighborSignal(ctx.getClickedPos()))
                 .setValue(IS_POLISHING, PurificationGemstones.EMPTY);
+    }
+
+    @Override
+    protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block sourceBlock, @org.jetbrains.annotations.Nullable Orientation wireOrientation, boolean notify) {
+        if (!world.isClientSide()) {
+            boolean bl = state.getValue(REDSTONE_POWERED);
+            if (bl != world.hasNeighborSignal(pos)) {
+                if (bl) {
+                    world.scheduleTick(pos, this, 4);
+                } else {
+                    world.setBlock(pos, state.cycle(REDSTONE_POWERED), Block.UPDATE_CLIENTS);
+                    MoreOresModLoader.LOGGER.info("Receiving Redstone Signal at [{}, {}, {}]", pos.getX(), pos.getY(), pos.getZ());
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        BlockState newState = state;
+
+        if(state.getValue(REDSTONE_POWERED) && !level.hasNeighborSignal(pos)) {
+            newState = newState.setValue(REDSTONE_POWERED, false);
+        }
+
+        if(level.getBlockEntity(pos) instanceof GemPurifierBlockEntity be) {
+            newState = newState.setValue(IS_POLISHING, be.gemstone());
+        }
+
+        level.setBlock(pos, newState, Block.UPDATE_ALL);
     }
 
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

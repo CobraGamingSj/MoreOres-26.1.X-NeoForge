@@ -329,8 +329,11 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
 
         for(long milestone : milestones) {
             if(energy >= milestone && previousRemovedRadiantDustMilestone < milestone) {
-                ContainerHelper.removeItem(stack.copyToList(), RADIANT_DUST_SLOT, 1);
-                previousRemovedRadiantDustMilestone = milestone;
+                try(Transaction transaction = Transaction.openRoot()) {
+                    ContainerHelper.removeItem(stack.copyToList(), RADIANT_DUST_SLOT, 1);
+                    previousRemovedRadiantDustMilestone = milestone;
+                    transaction.commit();
+                }
                 break;
             }
         }

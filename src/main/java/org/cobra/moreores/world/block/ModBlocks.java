@@ -104,10 +104,12 @@ public class ModBlocks {
     public static final DeferredBlock<Block> KASHMIR_SAPPHIRE_BLOCK = registerBlockWithStrength("kashmir_sapphire_block", Block::new);
     
     public static final DeferredBlock<Block> GEM_PURIFIER_BLOCK = registerBlock("gem_purifier_block",
-            p -> new GemPurifierBlock(p.requiresCorrectToolForDrops().noOcclusion()));
+            p -> new GemPurifierBlock(p.requiresCorrectToolForDrops().noOcclusion()
+                    .lightLevel(state -> state.getValue(GemPurifierBlock.REDSTONE_POWERED) ? 5 : 0)));
 
     public static final DeferredBlock<Block> GEM_CRYSTALLIZER_BLOCK = registerBlock("gem_crystallizer_block", 
-            p -> new GemCrystallizerBlock(p.requiresCorrectToolForDrops().noOcclusion()));
+            p -> new GemCrystallizerBlock(p.requiresCorrectToolForDrops().noOcclusion()
+                    .lightLevel(state -> state.getValue(GemCrystallizerBlock.REDSTONE_POWERED) ? 5 : 0)));
     
     public static final DeferredBlock<Block> RUBY_ORE = registerBlock("ruby_ore", p -> new DropExperienceBlock(UniformInt.of(2, 3), p.requiresCorrectToolForDrops().strength(6.0f, 6.0f).sound(SoundType.STONE).mapColor(MapColor.STONE)));
     public static final DeferredBlock<Block> DEEPSLATE_RUBY_ORE = registerBlock("deepslate_ruby_ore", p -> new DropExperienceBlock(UniformInt.of(2, 3), p.requiresCorrectToolForDrops().strength(6.5f, 6.5f).strength(6.5f).sound(SoundType.STONE).mapColor(MapColor.STONE)));
