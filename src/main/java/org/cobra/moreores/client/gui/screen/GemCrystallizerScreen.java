@@ -1,4 +1,4 @@
-package org.cobra.moreores.client.gui.menu;
+package org.cobra.moreores.client.gui.screen;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -108,14 +108,14 @@ public class GemCrystallizerScreen extends AbstractGemMachineScreen<GemCrystalli
     }
 
     @Override
-    protected void renderProgressArrow(GuiGraphicsExtractor context, int x, int y) {
+    protected void extractProgressArrow(GuiGraphicsExtractor context, int x, int y) {
         if(this.menu.isCrystallizing()) {
             context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, x + 70, y + 41, 207, 0, 11, this.menu.progressGetter(), TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
     }
 
     @Override
-    protected void renderRedstoneDust(GuiGraphicsExtractor graphics, int leftPos, int topPos) {
+    protected void extractRedstoneDust(GuiGraphicsExtractor graphics, int leftPos, int topPos) {
         int k = menu.getRedstoneDust();
         int l = Mth.clamp((k * 16 + 10000 - 1) / 10000, 0, 16);
 
@@ -144,19 +144,19 @@ public class GemCrystallizerScreen extends AbstractGemMachineScreen<GemCrystalli
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
-        super.extractBackground(context, mouseX, mouseY, delta);
-        renderRadiantDust(context, this.leftPos, this.topPos);
+    public void extractBackground(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float delta) {
+        super.extractBackground(extractor, mouseX, mouseY, delta);
+        extractRadiantDust(extractor, this.leftPos, this.topPos);
         if(this.menu.getBlockEntity().energyStack().isEmpty()) {
-            this.energyIngotSlotIcon.extractRenderState(this.menu, context, delta, this.leftPos, this.topPos);
+            this.energyIngotSlotIcon.extractRenderState(this.menu, extractor, delta, this.leftPos, this.topPos);
         }
         if(this.menu.getBlockEntity().ingredientStack().isEmpty() && this.menu.getBlockEntity().ingredientAfterStack().isEmpty()) {
-            this.inputBeforeIngotSlotIcon.extractRenderState(this.menu, context, delta, this.leftPos, this.topPos);
-            this.inputAfterIngotSlotIcon.extractRenderState(this.menu, context, delta, this.leftPos, this.topPos);
+            this.inputBeforeIngotSlotIcon.extractRenderState(this.menu, extractor, delta, this.leftPos, this.topPos);
+            this.inputAfterIngotSlotIcon.extractRenderState(this.menu, extractor, delta, this.leftPos, this.topPos);
         }
     }
 
-    private void renderRadiantDust(GuiGraphicsExtractor context, int x, int y) {
+    private void extractRadiantDust(GuiGraphicsExtractor context, int x, int y) {
         int k = menu.getDustCount();
         int l = Mth.clamp((18 * k + 10000 - 1) / 10000, 0, 18);
         if(l > 0) {
@@ -165,7 +165,7 @@ public class GemCrystallizerScreen extends AbstractGemMachineScreen<GemCrystalli
     }
 
     @Override
-    protected void renderEnergyHandler(GuiGraphicsExtractor context, int x, int y) {
+    protected void extractEnergyHandler(GuiGraphicsExtractor context, int x, int y) {
         int energyBarSize = Mth.ceil(this.menu.getEnergyPercent() * 44);
 
         int startY = y + 43 + 44 - energyBarSize;
@@ -175,15 +175,6 @@ public class GemCrystallizerScreen extends AbstractGemMachineScreen<GemCrystalli
         int barX2 = barX1 + 16;
 
         context.fillGradient(barX1, startY, barX2, endY, CommonColors.DARK_PURPLE, CommonColors.RED);
-    }
-
-    @Override
-    public void extractLabels(GuiGraphicsExtractor context, int mouseX, int mouseY) {
-        super.extractLabels(context, mouseX, mouseY);
-        String name = this.menu.blockEntity.getDisplayName().getString();
-        int x = 8;
-        int y = 8;
-        context.text(this.font, name, x, y, CommonColors.BLACK, false);
     }
 
     @Override

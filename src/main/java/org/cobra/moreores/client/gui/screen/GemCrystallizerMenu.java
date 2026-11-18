@@ -1,4 +1,4 @@
-package org.cobra.moreores.client.gui.menu;
+package org.cobra.moreores.client.gui.screen;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -9,6 +9,7 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
@@ -22,32 +23,33 @@ public class GemCrystallizerMenu extends AbstractGemMachineMenu<GemCrystallizerB
     private final ContainerData containerData;
 
     public GemCrystallizerMenu(int containerId, Inventory inventory, FriendlyByteBuf extra) {
-        this(containerId, inventory, inventory.player.level().getBlockEntity(extra.readBlockPos()), new ItemStacksResourceHandler(17), new SimpleContainerData(4));
+        this(containerId, inventory, inventory.player.level().getBlockEntity(extra.readBlockPos()), new ItemStacksResourceHandler(11), new SimpleContainerData(4));
     }
 
     public GemCrystallizerMenu(int containerId, Inventory inventory, BlockEntity blockEntity, ItemStacksResourceHandler handler, ContainerData containerData) {
-        super(ModMenuType.GEM_PURIFIER.get(), containerId, blockEntity.getBlockPos(), (GemCrystallizerBlockEntity) blockEntity);
+        super(ModMenuType.GEM_CRYSTALLIZER.get(), containerId, blockEntity.getBlockPos(), (GemCrystallizerBlockEntity) blockEntity);
         this.level = inventory.player.level();
         this.containerData = containerData;
 
         this.addSlot(new ResourceHandlerSlot(handler, handler::set, 0, 47, 22) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return stack.is(ModItemTags.RAW_GEMSTONE) || stack.is(ModItemTags.RAW_GEMSTONE_BLOCKS) || stack.is(ModItems.RAW_RUBY.get());
+                return stack.is(ModItemTags.GEMSTONE_BLOCKS) || stack.is(ModItemTags.GEMSTONE);
             }
         }); // Input Before
 
         this.addSlot(new ResourceHandlerSlot(handler, handler::set, 1, 87, 22) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return stack.is(ModItemTags.GEMSTONE) || stack.is(ModItemTags.GEMSTONE_BLOCKS) || stack.is(ModItems.RUBY.get());
+                return stack.is(ModItemTags.GEMSTONE_BLOCKS)
+                        || stack.is(ModItemTags.GEMSTONE) || stack.is(Blocks.OBSIDIAN.asItem());
             }
         }); // Input After
 
-        this.addSlot(new ResourceHandlerSlot(handler, handler::set, 2, 67, 72) {
+        this.addSlot(new ResourceHandlerSlot(handler, handler::set, 2, 64, 72) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return stack.is(ModItems.ENERGY_INGOT.get()) || stack.is(ModBlocks.ENERGY_BLOCK.get().asItem());
+                return stack.is(ModItemTags.CRYSTALLIZED);
             }
         }); // Result Slot
 
@@ -65,8 +67,10 @@ public class GemCrystallizerMenu extends AbstractGemMachineMenu<GemCrystallizerB
             }
         }); // Radiant Dust Source
 
+        this.addSlot(new ResourceHandlerSlot(handler, handler::set, 5, 92, 59)); // Redstone Slot
+
         for (int i = 0; i < 5; ++i) {
-            this.addSlot(new ResourceHandlerSlot(handler, handler::set, 5 +  i, 179, 97 + i * 18));
+            this.addSlot(new ResourceHandlerSlot(handler, handler::set, 6 +  i, 179, 97 + i * 18));
         }
 
         addPlayerGenericInventory(inventory);

@@ -19,6 +19,10 @@ public class ItemTagGen extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
+        tag(ModItemTags.HAS_ENERGY)
+                .add(ModItems.ENERGY_INGOT.get())
+                .add(ModBlocks.ENERGY_BLOCK.get().asItem());
+
         tag(ItemTags.SPEARS)
                 .add(ModItems.RUBY_SPEAR.get())
                 .add(ModItems.SAPPHIRE_SPEAR.get());
@@ -127,18 +131,44 @@ public class ItemTagGen extends ItemTagsProvider {
                         ModItems.LIMESTONE.get(), ModItems.MOONSTONE.get(), ModItems.RED_BERYL.get(), ModItems.GRANDIDIERITE.get(), ModItems.CRYSTAL_OF_ECLIPSE.get());
 
         tag(ModItemTags.GEMSTONE_BLOCKS)
-                .add(ModBlocks.RUBY_BLOCK.asItem(),
-                        ModBlocks.SAPPHIRE_BLOCK.asItem(),
-                        ModBlocks.GREEN_SAPPHIRE_BLOCK.asItem(),
-                        ModBlocks.BLUE_GARNET_BLOCK.asItem(),
-                        ModBlocks.PINK_GARNET_BLOCK.asItem(),
-                        ModBlocks.GREEN_GARNET_BLOCK.asItem(),
-                        ModBlocks.KYAWTHUITE_BLOCK.asItem(),
-                        ModBlocks.TOPAZ_BLOCK.asItem(),
-                        ModBlocks.WHITE_TOPAZ_BLOCK.asItem(),
-                        ModBlocks.PERIDOT_BLOCK.asItem(),
-                        ModBlocks.JADE_BLOCK.asItem(),
-                        ModBlocks.PYROPE_BLOCK.asItem());
+                .add(ModBlocks.RUBY_BLOCK.get().asItem(),
+                        ModBlocks.SAPPHIRE_BLOCK.get().asItem(),
+                        ModBlocks.GREEN_SAPPHIRE_BLOCK.get().asItem(),
+                        ModBlocks.BLUE_GARNET_BLOCK.get().asItem(),
+                        ModBlocks.PINK_GARNET_BLOCK.get().asItem(),
+                        ModBlocks.GREEN_GARNET_BLOCK.get().asItem(),
+                        ModBlocks.KYAWTHUITE_BLOCK.get().asItem(),
+                        ModBlocks.TOPAZ_BLOCK.get().asItem(),
+                        ModBlocks.WHITE_TOPAZ_BLOCK.get().asItem(),
+                        ModBlocks.PERIDOT_BLOCK.get().asItem(),
+                        ModBlocks.JADE_BLOCK.get().asItem(),
+                        ModBlocks.PYROPE_BLOCK.get().asItem());
+
+        tag(ModItemTags.CRYSTALLIZED)
+                .add(ModItems.CRIMSON_GARNET.get())
+                .add(ModItems.CRYSTALLITE.get())
+                .add(ModItems.ALEXANDRITE.get())
+                .add(ModItems.OPAL.get())
+                .add(ModItems.QUARTSIDIAN.get())
+                .add(ModItems.RADIANT_AMETHYST.get())
+                .add(ModItems.LIMESTONE.get())
+                .add(ModItems.MOONSTONE.get())
+                .add(ModItems.RED_BERYL.get())
+                .add(ModItems.GRANDIDIERITE.get())
+                .add(ModItems.KASHMIR_SAPPHIRE.get())
+                .add(ModItems.ORANGE_ZIRCON.get())
+                .add(ModBlocks.CRIMSON_GARNET_BLOCK.get().asItem())
+                .add(ModBlocks.ALEXANDRITE_BLOCK.get().asItem())
+                .add(ModBlocks.CRYSTALLITE_BLOCK.get().asItem())
+                .add(ModBlocks.MOONSTONE_BLOCK.get().asItem())
+                .add(ModBlocks.LIMESTONE_BLOCK.get().asItem())
+                .add(ModBlocks.QUARTSIDIAN_BLOCK.get().asItem())
+                .add(ModBlocks.RED_BERYL_BLOCK.get().asItem())
+                .add(ModBlocks.ORANGE_ZIRCON_BLOCK.get().asItem())
+                .add(ModBlocks.OPAL_BLOCK.get().asItem())
+                .add(ModBlocks.KASHMIR_SAPPHIRE_BLOCK.get().asItem())
+                .add(ModBlocks.RADIANT_AMETHYST_BLOCK.get().asItem())
+                .add(ModBlocks.GRANDIDIERITE_BLOCK.get().asItem());
 
         tag(ModItemTags.RAW_GEMSTONE)
                 .add(ModItems.RAW_RUBY.get())
@@ -155,18 +185,18 @@ public class ItemTagGen extends ItemTagsProvider {
                 .add(ModItems.RAW_PYROPE.get());
 
         tag(ModItemTags.RAW_GEMSTONE_BLOCKS)
-                .add(ModBlocks.RAW_RUBY_BLOCK.asItem(),
-                        ModBlocks.RAW_SAPPHIRE_BLOCK.asItem(),
-                        ModBlocks.RAW_GREEN_SAPPHIRE_BLOCK.asItem(),
-                        ModBlocks.RAW_BLUE_GARNET_BLOCK.asItem(),
-                        ModBlocks.RAW_PINK_GARNET_BLOCK.asItem(),
-                        ModBlocks.RAW_GREEN_GARNET_BLOCK.asItem(),
-                        ModBlocks.RAW_KYAWTHUITE_BLOCK.asItem(),
-                        ModBlocks.RAW_TOPAZ_BLOCK.asItem(),
-                        ModBlocks.RAW_WHITE_TOPAZ_BLOCK.asItem(),
-                        ModBlocks.RAW_PERIDOT_BLOCK.asItem(),
-                        ModBlocks.RAW_JADE_BLOCK.asItem(),
-                        ModBlocks.RAW_PYROPE_BLOCK.asItem());
+                .add(ModBlocks.RAW_RUBY_BLOCK.get().asItem(),
+                        ModBlocks.RAW_SAPPHIRE_BLOCK.get().asItem(),
+                        ModBlocks.RAW_GREEN_SAPPHIRE_BLOCK.get().asItem(),
+                        ModBlocks.RAW_BLUE_GARNET_BLOCK.get().asItem(),
+                        ModBlocks.RAW_PINK_GARNET_BLOCK.get().asItem(),
+                        ModBlocks.RAW_GREEN_GARNET_BLOCK.get().asItem(),
+                        ModBlocks.RAW_KYAWTHUITE_BLOCK.get().asItem(),
+                        ModBlocks.RAW_TOPAZ_BLOCK.get().asItem(),
+                        ModBlocks.RAW_WHITE_TOPAZ_BLOCK.get().asItem(),
+                        ModBlocks.RAW_PERIDOT_BLOCK.get().asItem(),
+                        ModBlocks.RAW_JADE_BLOCK.get().asItem(),
+                        ModBlocks.RAW_PYROPE_BLOCK.get().asItem());
 
 //        tag(ItemTags.ARROWS)
 //                .add(ModItems.GEM_ARROW);

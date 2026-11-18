@@ -9,6 +9,8 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -22,9 +24,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.cobra.moreores.client.gui.screen.GemCrystallizerMenu;
+import org.cobra.moreores.networking.block.ScreenGhostRenderingS2CPacket;
 import org.cobra.moreores.world.block.GemCrystallizerBlock;
 import org.cobra.moreores.world.block.ModBlocks;
 import org.cobra.moreores.world.block.entity.ModBlockEntityType;
@@ -41,23 +46,9 @@ import org.jspecify.annotations.Nullable;
 import java.util.Optional;
 
 public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
-    public final ItemStacksResourceHandler stack = new ItemStacksResourceHandler(17) {
-        @Override
-        protected void onContentsChanged(int index, ItemStack previousContents) {
-            super.onContentsChanged(index, previousContents);
-            GemCrystallizerBlockEntity.this.setChanged();
-            if(level != null && !level.isClientSide()) {
-                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
-            }
-        }
-
-        @Override
-        protected int getCapacity(int index, ItemResource resource) {
-            return 17;
-        }
-    };
-
     private long previousRemovedRadiantDustMilestone = 0;
+
+    private ItemStack lastPreviewResult = ItemStack.EMPTY;
 
     protected final ContainerData containerData;
     private int maxProgressTicks = 300;
@@ -104,13 +95,9 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
         };
     }
 
-    public void setDustCount(int dustCount) {
-        this.radiantDust = dustCount;
-    }
-
     @Override
     public int inventoryStackSize() {
-        return 16;
+        return 11;
     }
 
     @Override
@@ -178,8 +165,8 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
     }
 
     @Override
-    public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-        return null;
+    public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
+        return new GemCrystallizerMenu(containerId, inventory, this, this.main, containerData);
     }
 
     @Override
@@ -211,6 +198,8 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
             return;
         }
 
+        syncPreviewResult();
+
         dustTick++;
         redstoneTick++;
 
@@ -223,9 +212,9 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
             setChanged(level, pos, state);
         }
 
-        ItemResource stack = radiantDustStack();
-        if(stack.is(ModItems.RADIANT_DUST.get()) && radiantDust <= maxDust) {
-            radiantDust += 2000;
+        ItemResource main = radiantDustStack();
+        if(main.is(ModItems.RADIANT_DUST.get()) && radiantDust <= maxDust) {
+            radiantDust += 100;
             setChanged(level, pos, state);
         }
         ItemResource stack1 = redstoneStack(REDSTONE_SLOT);
@@ -234,11 +223,11 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
             setChanged(level, pos, state);
         }
 
-        changeState();
+        modifyState();
         if(machineStatus == MachineStatus.RUNNING) {
             energyState = MachineStatus.EnergyState.EXTRACTING;
             setChanged(level, pos, state);
-            if (isResultSlotAvailable() && checkRecipe() && hasRequiredEnergyAmount() && radiantDust >= 15) {
+            if (canResultAccept() && checkRecipe() && hasRequiredEnergyAmount() && radiantDust >= 15) {
                 this.increaseProgressTicks();
                 if((!level.hasNeighborSignal(pos) || redstone > 0) && redstoneTick >= 20) {
                     redstone--;
@@ -283,13 +272,28 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
         setChanged(level, pos, state);
     }
 
+    private void syncPreviewResult() {
+        Optional<RecipeHolder<GemCrystallizerRecipe>> recipe = getCurrentRecipe();
+        ItemStack result = recipe.map(holder -> holder.value().result().copy())
+                .orElse(ItemStack.EMPTY);
+
+        if (ItemStack.matches(lastPreviewResult, result)) {
+            return;
+        }
+        lastPreviewResult = result.copy();
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        PacketDistributor.sendToPlayersTrackingChunk(serverLevel, serverLevel.getChunkAt(getBlockPos()).getPos(), new ScreenGhostRenderingS2CPacket(getBlockPos(), lastPreviewResult));
+    }
+
     private void getCrystallizedGem() {
-        RecipeHolder<GemCrystallizerRecipe> recipe = currentRecipe().orElseThrow();
+        RecipeHolder<GemCrystallizerRecipe> recipe = getCurrentRecipe().orElseThrow();
 
-        ContainerHelper.removeItem(stack.copyToList(), INGREDIENT_BEFORE_SLOT, 1);
-        ContainerHelper.removeItem(stack.copyToList(), INGREDIENT_AFTER_SLOT, 1);
+        ContainerHelper.removeItem(main.copyToList(), INGREDIENT_BEFORE_SLOT, 1);
+        ContainerHelper.removeItem(main.copyToList(), INGREDIENT_AFTER_SLOT, 1);
 
-        stack.set(RESULT_SLOT, ItemResource.of(recipe.value().result()),
+        main.set(RESULT_SLOT, ItemResource.of(recipe.value().result()),
                 this.resultStack().toStack().getCount() + recipe.value().result().getCount());
     }
     private boolean hasCrystallizationFinished() {
@@ -302,16 +306,18 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
             energyHandler().set(1000000);
         }
 
-        long energy = this.energyAmount();
+        int energy = this.energyAmount();
 
-        long [] milestones = {100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000};
+        int [] milestones = {100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000};
 
         for(long milestone : milestones) {
             if(energy >= milestone && previousRemovedEnergyMilestone < milestone) {
                 try(Transaction transaction = Transaction.openRoot()) {
-                    ContainerHelper.removeItem(main.copyToList(), energySlot, 1);
-                    previousRemovedEnergyMilestone = milestone;
-                    transaction.commit();
+                    if(!energyStack().isEmpty()) {
+                        main.extract(ENERGY_SOURCE_SLOT, energyStack(), 1, transaction);
+                        previousRemovedEnergyMilestone = milestone;
+                        transaction.commit();
+                    }
                 }
                 break;
             }
@@ -330,16 +336,30 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
         for(long milestone : milestones) {
             if(energy >= milestone && previousRemovedRadiantDustMilestone < milestone) {
                 try(Transaction transaction = Transaction.openRoot()) {
-                    ContainerHelper.removeItem(stack.copyToList(), RADIANT_DUST_SLOT, 1);
-                    previousRemovedRadiantDustMilestone = milestone;
-                    transaction.commit();
+                    if(!radiantDustStack().isEmpty()) {
+                        main.extract(RADIANT_DUST_SLOT, radiantDustStack(), 1, transaction);
+                        previousRemovedRadiantDustMilestone = milestone;
+                        transaction.commit();
+                    }
                 }
                 break;
             }
         }
     }
 
-    private void changeState() {
+    public void drops() {
+        SimpleContainer inv = new SimpleContainer(main.size());
+        for (int i = 0; i < main.size(); i++) {
+            ItemAccess itemAccess = ItemAccess.forHandlerIndex(main, i);
+            inv.setItem(i, new ItemStack(itemAccess.getResource().getItem(), itemAccess.getAmount()));
+        }
+        if(level == null) {
+            return;
+        }
+        Containers.dropContents(this.level, this.worldPosition, inv);
+    }
+
+    private void modifyState() {
         BlockState state = getBlockState();
 
         state = state.setValue(GemCrystallizerBlock.IS_CRYSTALLIZING, gemstone());
@@ -352,20 +372,20 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
 
     @Override
     protected boolean checkRecipe() {
-        Optional<RecipeHolder<GemCrystallizerRecipe>> recipe = currentRecipe();
+        Optional<RecipeHolder<GemCrystallizerRecipe>> recipe = getCurrentRecipe();
 
         return recipe.isPresent() && hasRequiredEnergyAmount() && canInsertCountIntoResultSlot(recipe.get().value().result())
                 && canInsertItemIntoResultSlot(recipe.get().value().result().getItem());
     }
 
-    private Optional<RecipeHolder<GemCrystallizerRecipe>> currentRecipe() {
+    private Optional<RecipeHolder<GemCrystallizerRecipe>> getCurrentRecipe() {
         if(level == null) {
             return Optional.empty();
         }
         return ((ServerLevel) level).recipeAccess()
                 .getRecipeFor(ModRecipeType.GEM_CRYSTALLIZER.get(),
-                        new GemCrystallizerRecipeInput(stack.getResource(INGREDIENT_BEFORE_SLOT).toStack(),
-                                stack.getResource(INGREDIENT_AFTER_SLOT).toStack()), level);
+                        new GemCrystallizerRecipeInput(main.getResource(INGREDIENT_BEFORE_SLOT).toStack(),
+                                main.getResource(INGREDIENT_AFTER_SLOT).toStack()), level);
     }
 
     private boolean canInsertItemIntoResultSlot(Item item) {
@@ -377,7 +397,7 @@ public class GemCrystallizerBlockEntity extends AbstractGemMachineBlockEntity {
         return this.resultStack().toStack().getCount() + result.getCount() <= this.resultStack().getMaxStackSize();
     }
 
-    private boolean isResultSlotAvailable() {
+    private boolean canResultAccept() {
         return this.resultStack().isEmpty() || this.resultStack().toStack().getCount() < this.resultStack().getMaxStackSize();
     }
 }

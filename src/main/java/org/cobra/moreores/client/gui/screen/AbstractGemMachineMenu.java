@@ -1,4 +1,4 @@
-package org.cobra.moreores.client.gui.menu;
+package org.cobra.moreores.client.gui.screen;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;

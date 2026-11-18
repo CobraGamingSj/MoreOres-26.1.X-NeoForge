@@ -1,4 +1,4 @@
-package org.cobra.moreores.client.gui.menu;
+package org.cobra.moreores.client.gui.screen;
 
 import net.minecraft.world.entity.player.Inventory;
 import org.cobra.moreores.world.block.entity.gem.machine.AbstractGemMachineBlockEntity;

@@ -1,4 +1,4 @@
-package org.cobra.moreores.client.gui.menu;
+package org.cobra.moreores.client.gui.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -11,15 +11,13 @@ import net.minecraft.util.CommonColors;
 import org.cobra.moreores.networking.block.GemMachineButtonHandlingPayload;
 
 public class MachineButtonWidget extends Button {
-    private final Identifier texture;
+    private final Identifier background;
     private final int buttonIndex;
     private final BlockPos pos;
 
     public MachineButtonWidget(int x, int y, net.minecraft.network.chat.Component message, Identifier background, int buttonIndex, BlockPos pos) {
-        super(x, y, 32, 32, message, _ -> {
-
-        }, DEFAULT_NARRATION);
-        this.texture = background;
+        super(x, y, 32, 32, message, _ -> {}, DEFAULT_NARRATION);
+        this.background = background;
         this.buttonIndex = buttonIndex;
         this.pos = pos;
     }
@@ -31,7 +29,7 @@ public class MachineButtonWidget extends Button {
 
     @Override
     protected void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
-        context.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), 0, 0, this.getWidth(), this.getHeight(), 32, 32);
+        context.blit(RenderPipelines.GUI_TEXTURED, background, getX(), getY(), 0, 0, this.getWidth(), this.getHeight(), 32, 32);
         context.outline(getX(), getY(), 32, 32, CommonColors.DARK_GRAY);
         if(isHovered()) {
             context.outline(getX(), getY(), 32, 32, CommonColors.BLACK);

@@ -1,4 +1,4 @@
-package org.cobra.moreores.client.gui.menu;
+package org.cobra.moreores.client.gui.screen;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -35,7 +35,7 @@ public class GemPurifierMenu extends AbstractGemMachineMenu<GemPurifierBlockEnti
             }
         }); // Input
         
-        this.addSlot(new ResourceHandlerSlot(handler, handler::set, 1, 79, 61) {
+        this.addSlot(new ResourceHandlerSlot(handler, handler::set, 1, 75, 61) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.is(ModItemTags.GEMSTONE) || stack.is(ModItemTags.GEMSTONE_BLOCKS) || stack.is(ModItems.RUBY.get());
@@ -109,7 +109,7 @@ public class GemPurifierMenu extends AbstractGemMachineMenu<GemPurifierBlockEnti
                     return ItemStack.EMPTY;
                 }
                 slot.onQuickCraft(originalStack, stack);
-            } else if(invSlot >= 15 && invSlot < 51) {
+            } else if(invSlot >= 17 && invSlot < 51) {
                 if(isValidInput(originalStack)) {
                     if(!this.moveItemStackTo(originalStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

@@ -16,6 +16,7 @@ import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.cobra.moreores.tags.ModItemTags;
 import org.cobra.moreores.world.block.ModBlocks;
 import org.cobra.moreores.world.item.ModItems;
 import org.cobra.moreores.world.item.util.GemCategory;
@@ -52,11 +53,6 @@ public abstract class AbstractGemMachineBlockEntity extends BlockEntity implemen
                 if(level != null && !level.isClientSide()) {
                     level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
                 }
-            }
-
-            @Override
-            protected int getCapacity(int index, ItemResource resource) {
-                return inventoryStackSize();
             }
         };
     }
@@ -141,7 +137,7 @@ public abstract class AbstractGemMachineBlockEntity extends BlockEntity implemen
             return;
         }
         int amount = energyStack().is(ModItems.ENERGY_INGOT.get()) ? 102 : 154;
-        if(level.hasNeighborSignal(worldPosition)) amount *= (int) 2.5;
+        if(level.hasNeighborSignal(worldPosition)) amount *= 3;
         try(Transaction transaction = Transaction.openRoot()) {
             long inserted = energyHandler().insert(amount, transaction);
             transaction.commit();
@@ -191,10 +187,10 @@ public abstract class AbstractGemMachineBlockEntity extends BlockEntity implemen
     }
 
     protected boolean hasEnergySource() {
-        return this.main.getResource(2).is(ModItems.ENERGY_INGOT.get()) || this.main.getResource(2).is(ModBlocks.ENERGY_BLOCK.get().asItem());
+        return energyStack().is(ModItemTags.HAS_ENERGY);
     }
 
-    protected boolean hasRequiredEnergyAmount() {
+    public boolean hasRequiredEnergyAmount() {
         return this.energyHandler.getAmountAsInt() >= 13;
     }
 
@@ -210,9 +206,11 @@ public abstract class AbstractGemMachineBlockEntity extends BlockEntity implemen
         for(long milestone : milestones) {
             if(energy >= milestone && previousRemovedEnergyMilestone < milestone) {
                 try(Transaction transaction = Transaction.openRoot()) {
-                    ContainerHelper.removeItem(main.copyToList(), slot, 1);
-                    previousRemovedEnergyMilestone = milestone;
-                    transaction.commit();
+                    if(!energyStack().isEmpty()) {
+                        main.extract(slot, energyStack(), 1, transaction);
+                        previousRemovedEnergyMilestone = milestone;
+                        transaction.commit();
+                    }
                 }
                 break;
             }
@@ -229,11 +227,13 @@ public abstract class AbstractGemMachineBlockEntity extends BlockEntity implemen
         int [] milestones = {1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000};
 
         for(long milestone : milestones) {
-            if(redstone >= milestone && previousRemovedRedstoneMilestone < milestone) {
+            if(amount >= milestone && previousRemovedRedstoneMilestone < milestone) {
                 try(Transaction transaction = Transaction.openRoot()) {
-                    ContainerHelper.removeItem(main.copyToList(), slot, 1);
-                    previousRemovedRedstoneMilestone = milestone;
-                    transaction.commit();
+                    if(!redstoneStack(slot).isEmpty()) {
+                        main.extract(slot, redstoneStack(slot), 1, transaction);
+                        previousRemovedRedstoneMilestone = milestone;
+                        transaction.commit();
+                    }
                 }
                 break;
             }

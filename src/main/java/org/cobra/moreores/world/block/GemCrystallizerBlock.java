@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -65,10 +66,10 @@ public class GemCrystallizerBlock extends BaseEntityBlock {
             return InteractionResult.CONSUME;
         }
 
-//        if(level.getBlockEntity(pos) instanceof GemPurifierBlockEntity be) {
-//            player.openMenu(new SimpleMenuProvider(be, be.getDisplayName()), pos);
-//            return InteractionResult.SUCCESS;
-//        }
+        if(level.getBlockEntity(pos) instanceof GemCrystallizerBlockEntity be) {
+            player.openMenu(new SimpleMenuProvider(be, be.getDisplayName()), pos);
+            return InteractionResult.SUCCESS;
+        }
         player.sendSystemMessage(Component.literal("[MoreOres+] ").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD).append(Component.literal("This feature will be added soon.").withStyle(ChatFormatting.RED)));
         return InteractionResult.SUCCESS;
     }
@@ -76,7 +77,7 @@ public class GemCrystallizerBlock extends BaseEntityBlock {
     @Override
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, ItemStack toolStack, boolean willHarvest, FluidState fluid) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof GemPurifierBlockEntity blockEntity1) {
+        if (blockEntity instanceof GemCrystallizerBlockEntity blockEntity1) {
             blockEntity1.drops();
         }
         return super.onDestroyedByPlayer(state, level, pos, player, toolStack, willHarvest, fluid);

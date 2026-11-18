@@ -1,5 +1,6 @@
 package org.cobra.moreores;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -10,12 +11,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import org.cobra.moreores.client.gui.screen.AbstractGemMachineScreen;
+import org.cobra.moreores.client.render.block.entity.GemCrystallizerBlockEntityRenderer;
+import org.cobra.moreores.client.render.block.entity.GemPurifierBlockEntityRenderer;
+import org.cobra.moreores.networking.block.ScreenGhostRenderingS2CPacket;
 import org.cobra.moreores.world.block.ModBlocks;
-import org.cobra.moreores.client.gui.menu.GemCrystallizerScreen;
-import org.cobra.moreores.client.gui.menu.GemPurifierScreen;
-import org.cobra.moreores.client.gui.menu.ModMenuType;
+import org.cobra.moreores.client.gui.screen.GemCrystallizerScreen;
+import org.cobra.moreores.client.gui.screen.GemPurifierScreen;
+import org.cobra.moreores.client.gui.screen.ModMenuType;
 import org.cobra.moreores.world.block.entity.ModBlockEntityType;
 import org.cobra.moreores.enchantment.entity.effect.EnchantmentEffects;
 import org.cobra.moreores.world.item.ModCreativeModeTabs;
@@ -130,6 +136,34 @@ public class MoreOresModLoader {
             ItemStack jade = new ItemStack(ModItems.JADE.get());
             ItemStack pyrope = new ItemStack(ModItems.PYROPE.get());
 
+            ItemStack raw_gold = new ItemStack(Items.RAW_GOLD);
+            ItemStack raw_ruby = new ItemStack(ModItems.RAW_RUBY.get());
+            ItemStack raw_sapphire = new ItemStack(ModItems.RAW_SAPPHIRE.get());
+            ItemStack raw_green_sapphire = new ItemStack(ModItems.RAW_GREEN_SAPPHIRE.get());
+            ItemStack raw_blue_garnet = new ItemStack(ModItems.RAW_BLUE_GARNET.get());
+            ItemStack raw_pink_garnet = new ItemStack(ModItems.RAW_PINK_GARNET.get());
+            ItemStack raw_green_garnet = new ItemStack(ModItems.RAW_GREEN_GARNET.get());
+            ItemStack raw_kyawthuite = new ItemStack(ModItems.RAW_KYAWTHUITE.get());
+            ItemStack raw_topaz = new ItemStack(ModItems.RAW_TOPAZ.get());
+            ItemStack raw_white_topaz = new ItemStack(ModItems.RAW_WHITE_TOPAZ.get());
+            ItemStack raw_peridot = new ItemStack(ModItems.RAW_PERIDOT.get());
+            ItemStack raw_jade = new ItemStack(ModItems.RAW_JADE.get());
+            ItemStack raw_pyrope = new ItemStack(ModItems.RAW_PYROPE.get());
+
+            event.insertAfter(raw_gold, raw_ruby, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(raw_ruby, raw_sapphire, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(raw_sapphire, raw_green_sapphire, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(raw_green_sapphire, raw_blue_garnet, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(raw_blue_garnet, raw_pink_garnet, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(raw_pink_garnet, raw_green_garnet, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(raw_green_garnet, raw_kyawthuite, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(raw_kyawthuite, raw_topaz, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(raw_topaz, raw_white_topaz, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(raw_white_topaz, raw_peridot, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(raw_peridot, raw_jade, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(raw_jade, raw_pyrope, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+
+
             event.insertBefore(netIngot, energyIngot, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.insertAfter(netIngot, ruby, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.insertAfter(ruby, radiant, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
@@ -205,6 +239,7 @@ public class MoreOresModLoader {
         }
 
         if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
+
             ItemStack deepslateDiamondOre = new ItemStack(Blocks.DEEPSLATE_DIAMOND_ORE);
             ItemStack rubyOre = new ItemStack(ModBlocks.RUBY_ORE);
             ItemStack deepslateRubyOre = new ItemStack(ModBlocks.DEEPSLATE_RUBY_ORE);
@@ -257,6 +292,33 @@ public class MoreOresModLoader {
             event.insertAfter(deepslateJadeOre, pyropeOre, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.insertAfter(pyropeOre, deepslatePyropeOre, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.insertAfter(deepslatePyropeOre, eclipseOre, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+
+            ItemStack rawGoldBlock = new ItemStack(Blocks.RAW_GOLD_BLOCK);
+            ItemStack rawRubyBlock = new ItemStack(ModBlocks.RAW_RUBY_BLOCK);
+            ItemStack rawSapphireBlock = new ItemStack(ModBlocks.RAW_SAPPHIRE_BLOCK);
+            ItemStack rawGreenSapphireBlock = new ItemStack(ModBlocks.RAW_GREEN_SAPPHIRE_BLOCK);
+            ItemStack rawBlueGarnetBlock = new ItemStack(ModBlocks.RAW_BLUE_GARNET_BLOCK);
+            ItemStack rawPinkGarnetBlock = new ItemStack(ModBlocks.RAW_PINK_GARNET_BLOCK);
+            ItemStack rawGreenGarnetBlock = new ItemStack(ModBlocks.RAW_GREEN_GARNET_BLOCK);
+            ItemStack rawKyawthuiteBlock = new ItemStack(ModBlocks.RAW_KYAWTHUITE_BLOCK);
+            ItemStack rawTopazBlock = new ItemStack(ModBlocks.RAW_TOPAZ_BLOCK);
+            ItemStack rawWhiteTopazBlock = new ItemStack(ModBlocks.RAW_WHITE_TOPAZ_BLOCK);
+            ItemStack rawPeridotBlock = new ItemStack(ModBlocks.RAW_PERIDOT_BLOCK);
+            ItemStack rawJadeBlock = new ItemStack(ModBlocks.RAW_JADE_BLOCK);
+            ItemStack rawPyropeBlock = new ItemStack(ModBlocks.RAW_PYROPE_BLOCK);
+
+            event.insertAfter(rawGoldBlock, rawRubyBlock, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(rawRubyBlock, rawSapphireBlock, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(rawSapphireBlock, rawGreenSapphireBlock, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(rawGreenSapphireBlock, rawBlueGarnetBlock, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(rawBlueGarnetBlock, rawPinkGarnetBlock, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(rawPinkGarnetBlock, rawGreenGarnetBlock, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(rawGreenGarnetBlock, rawKyawthuiteBlock, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(rawKyawthuiteBlock, rawTopazBlock, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(rawTopazBlock, rawWhiteTopazBlock, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(rawWhiteTopazBlock, rawPeridotBlock, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(rawPeridotBlock, rawJadeBlock, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(rawJadeBlock, rawPyropeBlock, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
 
         if(event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
@@ -291,6 +353,7 @@ public class MoreOresModLoader {
             ItemStack sapPickaxe = new ItemStack(ModItems.SAPPHIRE_PICKAXE.get());
             ItemStack sapAxe = new ItemStack(ModItems.SAPPHIRE_AXE.get());
             ItemStack sapHoe = new ItemStack(ModItems.SAPPHIRE_HOE.get());
+
             ItemStack radShovel = new ItemStack(ModItems.RADIANT_SHOVEL.get());
             ItemStack radPickaxe = new ItemStack(ModItems.RADIANT_PICKAXE.get());
             ItemStack radAxe = new ItemStack(ModItems.RADIANT_AXE.get());
@@ -356,17 +419,24 @@ public class MoreOresModLoader {
         PayloadRegistrar registrar = event.registrar(MOD_ID);
         
         registrar.playToServer(EnergyIngotC2SPayload.TYPE, EnergyIngotC2SPayload.PACKET_CODEC, (payload, context) -> {
-            ServerPlayer player = (ServerPlayer) context.player();
-            EnergyIngotC2SPayload.handle(payload, player);
+            if(!(context.player() instanceof ServerPlayer serverPlayer)) return;
+            EnergyIngotC2SPayload.handle(payload, serverPlayer);
         });
         registrar.playToServer(MachineStatusDataPayload.TYPE, MachineStatusDataPayload.STREAM_CODEC, (payload, context) -> {
-            ServerPlayer player = (ServerPlayer) context.player();
-            MachineStatusDataPayload.handle(payload, player);
+            if(!(context.player() instanceof ServerPlayer serverPlayer)) return;
+            MachineStatusDataPayload.handle(payload, serverPlayer);
         });
         registrar.playToServer(GemMachineButtonHandlingPayload.TYPE, GemMachineButtonHandlingPayload.STREAM_CODEC, (payload, context) -> {
-            ServerPlayer player = (ServerPlayer) context.player();
-            GemMachineButtonHandlingPayload.handle(payload, player);
+            if(!(context.player() instanceof ServerPlayer serverPlayer)) return;
+            GemMachineButtonHandlingPayload.handle(payload, serverPlayer);
         });
+        registrar.playToClient(ScreenGhostRenderingS2CPacket.TYPE, ScreenGhostRenderingS2CPacket.STREAM_CODEC, (packet, context) -> context.enqueueWork(() -> {
+            if (Minecraft.getInstance().screen instanceof AbstractGemMachineScreen<?, ?> screen
+                    && screen.getMenu().getBlockPos().equals(packet.pos())) {
+
+                screen.setPreviewResultStack(packet.result());
+            }
+        }));
     }
     
     @SubscribeEvent
@@ -380,6 +450,13 @@ public class MoreOresModLoader {
         public static void onClientSetup(FMLClientSetupEvent event) {
            
         }
+
+        @SubscribeEvent
+        public static void registerEntityRenderer(EntityRenderersEvent.RegisterRenderers event) {
+            event.registerBlockEntityRenderer(ModBlockEntityType.GEM_PURIFIER.get(), GemPurifierBlockEntityRenderer::new);
+            event.registerBlockEntityRenderer(ModBlockEntityType.GEM_CRYSTALLIZER.get(), GemCrystallizerBlockEntityRenderer::new);
+        }
+
         @SubscribeEvent
         public static void registerScreens(RegisterMenuScreensEvent event) {
             event.register(ModMenuType.GEM_PURIFIER.get(), GemPurifierScreen::new);

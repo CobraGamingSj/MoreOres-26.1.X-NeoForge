@@ -1,4 +1,4 @@
-package org.cobra.moreores.client.gui.menu;
+package org.cobra.moreores.client.gui.screen;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -115,14 +115,14 @@ public class GemPurifierScreen extends AbstractGemMachineScreen<GemPurifierBlock
     }
 
     @Override
-    public void renderProgressArrow(GuiGraphicsExtractor context, int x, int y) {
+    public void extractProgressArrow(GuiGraphicsExtractor context, int x, int y) {
         if(this.menu.isPurifying()) {
             context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, x + 83, y + 31, 226, 0, 10, this.menu.progressGetter(), TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
     }
 
     @Override
-    protected void renderRedstoneDust(GuiGraphicsExtractor graphics, int leftPos, int topPos) {
+    protected void extractRedstoneDust(GuiGraphicsExtractor graphics, int leftPos, int topPos) {
         int k = menu.getRedstoneDust();
         int l = Mth.clamp((k * 16 + 10000 - 1) / 10000, 0, 16);
 
@@ -134,7 +134,7 @@ public class GemPurifierScreen extends AbstractGemMachineScreen<GemPurifierBlock
     }
 
     @Override
-    public void renderEnergyHandler(GuiGraphicsExtractor context, int x, int y) {
+    public void extractEnergyHandler(GuiGraphicsExtractor context, int x, int y) {
         int energyBarSize = Mth.ceil(this.menu.getEnergyPercent() * 44);
         int gradientStart = CommonColors.BLUE;
         int gradientEnd = CommonColors.GREEN;
@@ -142,22 +142,13 @@ public class GemPurifierScreen extends AbstractGemMachineScreen<GemPurifierBlock
     }
 
     @Override
-    public void extractLabels(GuiGraphicsExtractor context, int mouseX, int mouseY) {
-        super.extractLabels(context, mouseX, mouseY);
-        String name = this.menu.blockEntity.getDisplayName().getString();
-        int x = 8;
-        int y = 8;
-        context.text(this.font, name, x, y, CommonColors.BLACK, false);
-    }
-
-    @Override
-    public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
-        super.extractBackground(context, mouseX, mouseY, delta);
+    public void extractBackground(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float delta) {
+        super.extractBackground(extractor, mouseX, mouseY, delta);
         if(this.menu.getBlockEntity().energyStack().isEmpty()) {
-            this.energyIngotSlotIcon.extractRenderState(this.menu, context, delta, this.leftPos, this.topPos);
+            this.energyIngotSlotIcon.extractRenderState(this.menu, extractor, delta, this.leftPos, this.topPos);
         }
         if(this.menu.getBlockEntity().ingredientStack().isEmpty()) {
-            this.inputSlotIcon.extractRenderState(this.menu, context, delta, this.leftPos, this.topPos);
+            this.inputSlotIcon.extractRenderState(this.menu, extractor, delta, this.leftPos, this.topPos);
         }
     }
 

@@ -29,12 +29,14 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.cobra.moreores.client.gui.menu.GemPurifierMenu;
+import org.cobra.moreores.client.gui.screen.GemPurifierMenu;
+import org.cobra.moreores.networking.block.ScreenGhostRenderingS2CPacket;
 import org.cobra.moreores.recipe.GemPurifierRecipe;
 import org.cobra.moreores.recipe.ModRecipeType;
 import org.cobra.moreores.recipe.input.GemPurifyingRecipeInput;
@@ -55,7 +57,9 @@ public class GemPurifierBlockEntity extends AbstractGemMachineBlockEntity {
     private FluidState fluidState = FluidState.IDLE;
     
     protected final ContainerData containerData;
-    
+
+    private ItemStack lastPreviewResult = ItemStack.EMPTY;
+
     public static final int INGREDIENT_SLOT = 0;
     public static final int RESULT_SLOT = 1;
     public static final int ENERGY_SLOT = 2;
@@ -227,6 +231,8 @@ public class GemPurifierBlockEntity extends AbstractGemMachineBlockEntity {
             return;
         }
 
+        syncPreviewResult();
+
         redstoneTick++;
 
         IGemstone newGem = gemstone();
@@ -346,6 +352,21 @@ public class GemPurifierBlockEntity extends AbstractGemMachineBlockEntity {
         }
     }
 
+    private void syncPreviewResult() {
+        Optional<RecipeHolder<GemPurifierRecipe>> recipe = getCurrentRecipe();
+        ItemStack result = recipe.map(holder -> holder.value().result().copy())
+                .orElse(ItemStack.EMPTY);
+
+        if (ItemStack.matches(lastPreviewResult, result)) {
+            return;
+        }
+        lastPreviewResult = result.copy();
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        PacketDistributor.sendToPlayersTrackingChunk(serverLevel, serverLevel.getChunkAt(getBlockPos()).getPos(), new ScreenGhostRenderingS2CPacket(getBlockPos(), lastPreviewResult));
+    }
+
     private boolean hasPurificationFinished() {
         return initialProgressTicks >= maxProgress;
     }
@@ -361,10 +382,12 @@ public class GemPurifierBlockEntity extends AbstractGemMachineBlockEntity {
         for(long milestone : milestones) {
             if(water >= milestone && previousFluidMilestone < milestone) {
                 try(Transaction transaction = Transaction.openRoot()) {
-                    ContainerHelper.removeItem(main.copyToList(), WATER_SLOT, 1);
-                    main.set(WATER_SLOT, ItemResource.of(Items.BUCKET), 1);
-                    previousFluidMilestone = milestone;
-                    transaction.commit();
+                    if(!fluidStack().isEmpty()) {
+                        main.extract(WATER_SLOT, fluidStack(), 1, transaction);
+                        main.set(WATER_SLOT, ItemResource.of(Items.BUCKET), 1);
+                        previousFluidMilestone = milestone;
+                        transaction.commit();
+                    }
                 }
                 break;
             }
@@ -376,7 +399,7 @@ public class GemPurifierBlockEntity extends AbstractGemMachineBlockEntity {
     }
 
     @Override
-    protected boolean hasRequiredEnergyAmount() {
+    public boolean hasRequiredEnergyAmount() {
         return this.energyHandler.getAmountAsInt() >= 128;
     }
 

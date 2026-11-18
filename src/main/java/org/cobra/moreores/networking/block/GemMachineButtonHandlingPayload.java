@@ -1,14 +1,16 @@
 package org.cobra.moreores.networking.block;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.cobra.moreores.MoreOresModLoader;
-import org.cobra.moreores.client.gui.menu.AbstractGemMachineMenu;
+import org.cobra.moreores.client.gui.screen.AbstractGemMachineMenu;
 import org.cobra.moreores.world.block.entity.gem.machine.AbstractGemMachineBlockEntity;
 
 public record GemMachineButtonHandlingPayload(int buttonIndex, BlockPos pos) implements CustomPacketPayload {
@@ -26,7 +28,12 @@ public record GemMachineButtonHandlingPayload(int buttonIndex, BlockPos pos) imp
 
         if(world.getBlockEntity(packet.pos) instanceof AbstractGemMachineBlockEntity blockEntity) {
             switch (packet.buttonIndex) {
-                case 0 -> blockEntity.startProcess();
+                case 0 -> {
+                    if(!blockEntity.hasRequiredEnergyAmount()) {
+                        player.sendSystemMessage(Component.literal("Not enough energy amount!").withStyle(ChatFormatting.RED), false);
+                    }
+                    blockEntity.startProcess();
+                }
                 case 1 -> blockEntity.pauseProcess();
                 case 2 -> blockEntity.resumeProcess();
                 case 3 -> blockEntity.stopProcess();
@@ -43,7 +50,6 @@ public record GemMachineButtonHandlingPayload(int buttonIndex, BlockPos pos) imp
         }
 
         MoreOresModLoader.LOGGER.info("Received button click with ID: {} at {}", packet.buttonIndex, "[" + packet.pos.getX() + ", " + packet.pos.getY() + ", " + packet.pos.getZ() + "]");
-
     }
 
     @Override
