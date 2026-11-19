@@ -144,6 +144,34 @@ public class ItemTagGen extends ItemTagsProvider {
                         ModBlocks.JADE_BLOCK.get().asItem(),
                         ModBlocks.PYROPE_BLOCK.get().asItem());
 
+        tag(ModItemTags.CRYSTALLIZED_GEMSTONES)
+                .add(ModItems.CRIMSON_GARNET.get())
+                .add(ModItems.CRYSTALLITE.get())
+                .add(ModItems.ALEXANDRITE.get())
+                .add(ModItems.OPAL.get())
+                .add(ModItems.QUARTSIDIAN.get())
+                .add(ModItems.RADIANT_AMETHYST.get())
+                .add(ModItems.LIMESTONE.get())
+                .add(ModItems.MOONSTONE.get())
+                .add(ModItems.RED_BERYL.get())
+                .add(ModItems.GRANDIDIERITE.get())
+                .add(ModItems.KASHMIR_SAPPHIRE.get())
+                .add(ModItems.ORANGE_ZIRCON.get());
+
+        tag(ModItemTags.CRYSTALLIZED_GEMSTONE_BLOCKS)
+                .add(ModBlocks.CRIMSON_GARNET_BLOCK.get().asItem())
+                .add(ModBlocks.ALEXANDRITE_BLOCK.get().asItem())
+                .add(ModBlocks.CRYSTALLITE_BLOCK.get().asItem())
+                .add(ModBlocks.MOONSTONE_BLOCK.get().asItem())
+                .add(ModBlocks.LIMESTONE_BLOCK.get().asItem())
+                .add(ModBlocks.QUARTSIDIAN_BLOCK.get().asItem())
+                .add(ModBlocks.RED_BERYL_BLOCK.get().asItem())
+                .add(ModBlocks.ORANGE_ZIRCON_BLOCK.get().asItem())
+                .add(ModBlocks.OPAL_BLOCK.get().asItem())
+                .add(ModBlocks.KASHMIR_SAPPHIRE_BLOCK.get().asItem())
+                .add(ModBlocks.RADIANT_AMETHYST_BLOCK.get().asItem())
+                .add(ModBlocks.GRANDIDIERITE_BLOCK.get().asItem());
+
         tag(ModItemTags.CRYSTALLIZED)
                 .add(ModItems.CRIMSON_GARNET.get())
                 .add(ModItems.CRYSTALLITE.get())
@@ -203,15 +231,6 @@ public class ItemTagGen extends ItemTagsProvider {
 //
 //        tag(ItemTags.BOW_ENCHANTABLE)
 //                .add(ModItems.RADIANT_BOW);
-
-        tag(ModItemTags.METAL)
-                .add(Items.IRON_INGOT)
-                .add(Items.COPPER_INGOT)
-                .add(Items.GOLD_INGOT);
-
-        tag(ModItemTags.RARE)
-                .addTag(ModItemTags.GEMSTONE)
-                .addTag(ModItemTags.METAL);
 
         tag(ModItemTags.REPAIRS_RUBY_ARMOR)
                 .add(ModItems.RUBY.get());
