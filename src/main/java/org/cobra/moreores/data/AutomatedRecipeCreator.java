@@ -375,14 +375,23 @@ public class AutomatedRecipeCreator extends RecipeProvider {
                 .unlockedBy(getHasName(ModItems.CRYSTAL_OF_ECLIPSE), has(ModItems.CRYSTAL_OF_ECLIPSE))
                 .save(output, MoreOresModLoader.recipeKey(getSimpleRecipeName(ModItems.ECLIPSE_GEM)));
 
-        shaped(RecipeCategory.MISC, ModItems.RADIANT.get())
-                .pattern("aaa")
-                .pattern("aba")
-                .pattern("aaa")
-                .define('a', ModItems.RUBY.get())
-                .define('b', Items.DIAMOND)
-                .unlockedBy(getHasName(ModItems.RUBY.get()), has(ModItems.RUBY.get()))
-                .save(output, getSimpleRecipeName(ModItems.RADIANT_DUST.get()) + "_from_ruby");
+        shaped(RecipeCategory.COMBAT, ModItems.RADIANT_BOW)
+                .pattern(" ab")
+                .pattern("a b")
+                .pattern(" ab")
+                .define('a', Items.STRING)
+                .define('b', ModItems.ECLIPSE_GEM)
+                .unlockedBy(getHasName(ModItems.ECLIPSE_GEM), has(ModItems.ECLIPSE_GEM))
+                .save(output, MoreOresModLoader.recipeKey(getSimpleRecipeName(ModItems.RADIANT_BOW)));
+
+        shaped(RecipeCategory.MISC, ModItems.GEM_ARROW)
+                .pattern("###")
+                .pattern("#a#")
+                .pattern("###")
+                .define('a', Items.ARROW)
+                .define('#', ModItemTags.CRYSTALLIZED)
+                .unlockedBy(getHasName(Items.ARROW), has(Items.ARROW))
+                .save(output, MoreOresModLoader.recipeKey(getSimpleRecipeName(ModItems.GEM_ARROW)));
     }
 
     public void reversibleCompactingRecipe(

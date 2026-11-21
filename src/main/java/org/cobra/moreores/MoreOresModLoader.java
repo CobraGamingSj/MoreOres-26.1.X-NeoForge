@@ -1,5 +1,6 @@
 package org.cobra.moreores;
 
+import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -11,34 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import org.cobra.moreores.client.gui.screen.AbstractGemMachineScreen;
-import org.cobra.moreores.client.render.block.entity.GemCrystallizerBlockEntityRenderer;
-import org.cobra.moreores.client.render.block.entity.GemPurifierBlockEntityRenderer;
-import org.cobra.moreores.networking.block.ScreenGhostRenderingS2CPacket;
-import org.cobra.moreores.world.block.ModBlocks;
-import org.cobra.moreores.client.gui.screen.GemCrystallizerScreen;
-import org.cobra.moreores.client.gui.screen.GemPurifierScreen;
-import org.cobra.moreores.client.gui.screen.ModMenuType;
-import org.cobra.moreores.world.block.entity.ModBlockEntityType;
-import org.cobra.moreores.enchantment.entity.effect.EnchantmentEffects;
-import org.cobra.moreores.world.item.ModCreativeModeTabs;
-import org.cobra.moreores.world.item.ModItems;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import org.cobra.moreores.networking.block.GemMachineButtonHandlingPayload;
-import org.cobra.moreores.networking.block.MachineStatusDataPayload;
-import org.cobra.moreores.networking.item.EnergyIngotC2SPayload;
-import org.cobra.moreores.recipe.ModRecipeSerializer;
-import org.cobra.moreores.recipe.ModRecipeType;
-import org.cobra.moreores.recipe.book.ModRecipeBookCategories;
-import org.cobra.moreores.recipe.display.ModRecipeDisplays;
-import org.cobra.moreores.village.ModVillagerProfession;
-import org.slf4j.Logger;
-
-import com.mojang.logging.LogUtils;
-
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -48,9 +21,36 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import org.cobra.moreores.client.gui.screen.AbstractGemMachineScreen;
+import org.cobra.moreores.client.gui.screen.GemCrystallizerScreen;
+import org.cobra.moreores.client.gui.screen.GemPurifierScreen;
+import org.cobra.moreores.client.gui.screen.ModMenuType;
+import org.cobra.moreores.client.render.block.entity.GemCrystallizerBlockEntityRenderer;
+import org.cobra.moreores.client.render.block.entity.GemPurifierBlockEntityRenderer;
+import org.cobra.moreores.client.render.item.entity.GemArrowEntityRenderer;
+import org.cobra.moreores.enchantment.entity.effect.EnchantmentEffects;
+import org.cobra.moreores.networking.block.GemMachineButtonHandlingPayload;
+import org.cobra.moreores.networking.block.MachineStatusDataPayload;
+import org.cobra.moreores.networking.block.ScreenGhostRenderingS2CPacket;
+import org.cobra.moreores.networking.item.EnergyIngotC2SPayload;
+import org.cobra.moreores.recipe.ModRecipeSerializer;
+import org.cobra.moreores.recipe.ModRecipeType;
+import org.cobra.moreores.recipe.book.ModRecipeBookCategories;
+import org.cobra.moreores.recipe.display.ModRecipeDisplays;
+import org.cobra.moreores.village.ModVillagerProfession;
+import org.cobra.moreores.world.block.ModBlocks;
+import org.cobra.moreores.world.block.entity.ModBlockEntityType;
+import org.cobra.moreores.world.entity.ModEntityTypes;
+import org.cobra.moreores.world.item.ModCreativeModeTabs;
+import org.cobra.moreores.world.item.ModItems;
+import org.slf4j.Logger;
 
 @Mod(MoreOresModLoader.MOD_ID)
 public class MoreOresModLoader {
@@ -77,11 +77,11 @@ public class MoreOresModLoader {
         }
         return builder.toString();
     }
-    
+
     public static ResourceKey<Recipe<?>> recipeKey(String id) {
         return ResourceKey.create(Registries.RECIPE, id(id));
     }
-    
+
     public MoreOresModLoader(IEventBus schoolBus, ModContainer modContainer) {
         schoolBus.addListener(this::commonSetup);
         schoolBus.addListener(this::registerPayloads);
@@ -106,10 +106,10 @@ public class MoreOresModLoader {
         ModVillagerProfession.register(schoolBus);
 
         EnchantmentEffects.register(schoolBus);
-        
-        schoolBus.addListener(this::addCreative);
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, MoreOresConfig.SPEC);
+        ModEntityTypes.register(schoolBus);
+
+        schoolBus.addListener(this::addCreative);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -329,17 +329,17 @@ public class MoreOresModLoader {
             ItemStack smithingTable = new ItemStack(Blocks.SMITHING_TABLE);
             ItemStack gemPurifier = new ItemStack(ModBlocks.GEM_PURIFIER_BLOCK.get());
             ItemStack gemCrystallizer = new ItemStack(ModBlocks.GEM_CRYSTALLIZER_BLOCK.get());
-            
+
             event.insertAfter(blastFurnace, energyBlock, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.insertAfter(redstoneLamp, rubyLamp, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.insertAfter(smithingTable, gemPurifier, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.insertAfter(gemPurifier, gemCrystallizer, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
-        
+
         if(event.getTabKey() == CreativeModeTabs.REDSTONE_BLOCKS) {
             ItemStack redstoneLamp = new ItemStack(Blocks.REDSTONE_LAMP);
             ItemStack rubyLamp = new ItemStack(ModBlocks.RUBY_LAMP.get());
-            
+
             event.insertAfter(redstoneLamp, rubyLamp, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
 
@@ -358,7 +358,7 @@ public class MoreOresModLoader {
             ItemStack radPickaxe = new ItemStack(ModItems.RADIANT_PICKAXE.get());
             ItemStack radAxe = new ItemStack(ModItems.RADIANT_AXE.get());
             ItemStack radHoe = new ItemStack(ModItems.RADIANT_HOE.get());
-            
+
             event.insertAfter(netheriteHoe, rubyShovel, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.insertAfter(rubyShovel, rubyPickaxe, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.insertAfter(rubyPickaxe, rubyAxe, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
@@ -372,7 +372,7 @@ public class MoreOresModLoader {
             event.insertAfter(radPickaxe, radAxe, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.insertAfter(radAxe, radHoe, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
-        
+
         if(event.getTabKey() == CreativeModeTabs.COMBAT) {
             ItemStack netSword = new ItemStack(Items.NETHERITE_SWORD);
             ItemStack rubySword = new ItemStack(ModItems.RUBY_SWORD.get());
@@ -394,6 +394,10 @@ public class MoreOresModLoader {
             ItemStack radPlate = new ItemStack(ModItems.RADIANT_CHESTPLATE.get());
             ItemStack radLgg = new ItemStack(ModItems.RADIANT_LEGGINGS.get());
             ItemStack radBoots = new ItemStack(ModItems.RADIANT_BOOTS.get());
+            ItemStack bow = new ItemStack(Items.BOW);
+            ItemStack radBow = new ItemStack(ModItems.RADIANT_BOW.get());
+            ItemStack arrow = new ItemStack(Items.ARROW);
+            ItemStack gemArrow = new ItemStack(ModItems.GEM_ARROW.get());
 
             event.insertAfter(netSword, rubySword, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.insertAfter(rubySword, sapphireSword, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
@@ -412,12 +416,14 @@ public class MoreOresModLoader {
             event.insertAfter(radHelm, radPlate, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.insertAfter(radPlate, radLgg, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.insertAfter(radLgg, radBoots, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(bow, radBow, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.insertAfter(arrow, gemArrow, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
     }
-    
+
     public void registerPayloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar(MOD_ID);
-        
+
         registrar.playToServer(EnergyIngotC2SPayload.TYPE, EnergyIngotC2SPayload.PACKET_CODEC, (payload, context) -> {
             if(!(context.player() instanceof ServerPlayer serverPlayer)) return;
             EnergyIngotC2SPayload.handle(payload, serverPlayer);
@@ -438,7 +444,7 @@ public class MoreOresModLoader {
             }
         }));
     }
-    
+
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
 
@@ -448,13 +454,14 @@ public class MoreOresModLoader {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-           
+
         }
 
         @SubscribeEvent
         public static void registerEntityRenderer(EntityRenderersEvent.RegisterRenderers event) {
             event.registerBlockEntityRenderer(ModBlockEntityType.GEM_PURIFIER.get(), GemPurifierBlockEntityRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntityType.GEM_CRYSTALLIZER.get(), GemCrystallizerBlockEntityRenderer::new);
+            event.registerEntityRenderer(ModEntityTypes.GEM_ARROW.get(), GemArrowEntityRenderer::new);
         }
 
         @SubscribeEvent

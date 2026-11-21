@@ -226,11 +226,11 @@ public class ItemTagGen extends ItemTagsProvider {
                         ModBlocks.RAW_JADE_BLOCK.get().asItem(),
                         ModBlocks.RAW_PYROPE_BLOCK.get().asItem());
 
-//        tag(ItemTags.ARROWS)
-//                .add(ModItems.GEM_ARROW);
-//
-//        tag(ItemTags.BOW_ENCHANTABLE)
-//                .add(ModItems.RADIANT_BOW);
+        tag(ItemTags.ARROWS)
+                .add(ModItems.GEM_ARROW.get());
+
+        tag(ItemTags.BOW_ENCHANTABLE)
+                .add(ModItems.RADIANT_BOW.get());
 
         tag(ModItemTags.REPAIRS_RUBY_ARMOR)
                 .add(ModItems.RUBY.get());
